@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Emergencias 112</title>
+    <style>
+        /* --- ESTILOS ORIGINALES (Tus Variables) --- */
+        :root {
+            --cnp-blue: #002D62;
+            --dark-bg: #121212;
+            --panel-bg: #1E1E1E;
+            --text-main: #E0E0E0;
+            --accent: #007bff;
+            --danger: #dc3545;
+            --success: #28a745;
+            
+            /* Colores Roles */
+            --policia: #002D62;
+            --ems: #dc3545;
+            --bomberos: #e67e22;
+            --mecanicos: #f1c40f;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            background: linear-gradient(135deg, #001f3f 0%, #000000 100%); 
+            color: var(--text-main); 
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Contenedor Principal (Adaptado de tu .login-container) */
+        .dispatch-container { 
+            background: var(--panel-bg); 
+            padding: 40px; 
+            border-radius: 10px; 
+            width: 450px; /* Un poco más ancho para que quepan los botones */
+            text-align: center; 
+            border-top: 5px solid var(--cnp-blue); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            position: relative;
+        }
+
+        h2 { margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        p { color: #888; font-size: 14px; margin-bottom: 25px; }
+
+        /* Selector de Servicios */
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .service-btn {
+            padding: 15px;
+            background: #2b2b2b;
+            border: 2px solid #444;
+            color: #aaa;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .service-btn:hover { background: #333; }
+
+        /* Estados Activos (Seleccionados) */
+        .service-btn.active.policia { background: var(--policia); border-color: #4a90e2; color: white; }
+        .service-btn.active.ems { background: var(--ems); border-color: #ff6b6b; color: white; }
+        .service-btn.active.bomberos { background: var(--bomberos); border-color: #ffb973; color: white; }
+        .service-btn.active.mecanicos { background: var(--mecanicos); border-color: #ffeaa7; color: black; }
+
+        /* Inputs (Tu estilo original) */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 12px; color: #888; font-weight: bold; margin-bottom: 5px; }
+        
+        input, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            background: #2b2b2b; 
+            border: 1px solid #444; 
+            color: white; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        input:focus, textarea:focus { border-color: var(--accent); outline: none; }
+        textarea { resize: vertical; min-height: 80px; }
+
+        /* Botón Enviar */
+        .btn-send { 
+            width: 100%; 
+            padding: 12px; 
+            background: var(--success); 
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-size: 16px;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        .btn-send:hover { filter: brightness(1.1); }
+        .btn-send:disabled { background: #444; cursor: not-allowed; }
+
+        /* Notificación */
+        .notification {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .notif-success { background: rgba(40, 167, 69, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .notif-error { background: rgba(220, 53, 69, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+    </style>
+</head>
+<body>
+
+    <div class="dispatch-container">
+        <h2>Central 112 VLC:RP</h2>
+        <p>Seleccione el servicio y describa la emergencia</p>
+
+        <!-- Selector de Servicios -->
+        <div class="service-grid">
+            <div class="service-btn" onclick="selectService('policia', this)">👮‍♂️ Policía</div>
+            <div class="service-btn" onclick="selectService('ems', this)">🚑 S.A.M.U</div>
+            <div class="service-btn" onclick="selectService('bomberos', this)">🚒 Bomberos</div>
+            <div class="service-btn" onclick="selectService('mecanicos', this)">🔧 Mecánicos</div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="input-group">
+            <label>NOMBRE DEL CIUDADANO</label>
+            <input type="text" id="name" placeholder="Ej: Juan Perez">
+        </div>
+
+        <div class="input-group">
+            <label>UBICACIÓN EXACTA</label>
+            <input type="text" id="location" placeholder="Ej: Plaza Central, Calle 4">
+        </div>
+
+        <div class="input-group">
+            <label>DESCRIPCIÓN DE LA SITUACIÓN</label>
+            <textarea id="message" placeholder="Describa brevemente lo sucedido..."></textarea>
+        </div>
+
+        <button class="btn-send" onclick="sendAlert()">ENVIAR ALERTA 📡</button>
+
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN ---
+        // ¡PEGA AQUÍ TU WEBHOOK DE DISCORD!
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1447737113683562559/R5WwUDWAIwYEoxB6I5ZKIruX3AuIYi_AllPAnVyYbjVNfc7DPliBish9q0GutvwhpMdN";
+
+        let currentService = null;
+        let serviceColor = null;
+        let serviceName = null;
+
+        // Función para seleccionar servicio
+        function selectService(service, element) {
+            // Resetear estilos
+            document.querySelectorAll('.service-btn').forEach(btn => {
+                btn.classList.remove('active', 'policia', 'ems', 'bomberos', 'mecanicos');
+            });
+
+            // Activar el seleccionado
+            element.classList.add('active', service);
+            currentService = service;
+
+            // Definir colores para Discord (Decimal) y Nombres
+            switch(service) {
+                case 'policia':
+                    serviceColor = 3447003; // Azul Oscuro
+                    serviceName = "POLICÍA NACIONAL";
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--policia)";
+                    break;
+                case 'ems':
+                    serviceColor = 15158332; // Rojo
+                    serviceName = "SERVICIOS MÉDICOS (EMS)";
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--ems)";
+                    break;
+                case 'bomberos':
+                    serviceColor = 15105570; // Naranja
+                    serviceName = "BOMBEROS";
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--bomberos)";
+                    break;
+                case 'mecanicos':
+                    serviceColor = 16776960; // Amarillo
+                    serviceName = "ASISTENCIA EN CARRETERA";
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--mecanicos)";
+                    break;
+            }
+        }
+
+        // Función para enviar al Webhook
+        function sendAlert() {
+            const name = document.getElementById('name').value;
+            const location = document.getElementById('location').value;
+            const message = document.getElementById('message').value;
+            const notif = document.getElementById('notification');
+
+            // Validaciones básicas
+            if (!currentService) {
+                showNotification("⚠ Por favor, selecciona un servicio (Policía, EMS...)", "error");
+                return;
+            }
+            if (!name || !location || !message) {
+                showNotification("⚠ Debes rellenar todos los campos.", "error");
+                return;
+            }
+
+            // Preparar el Embed de Discord
+            const payload = {
+                username: "Central 112",
+                avatar_url: "https://cdn-icons-png.flaticon.com/512/564/564619.png",
+                embeds: [
+                    {
+                        title: `🚨 LLAMADA DE EMERGENCIA: ${serviceName}`,
+                        description: `**Detalles del Aviso:**\n${message}`,
+                        color: serviceColor,
+                        fields: [
+                            {
+                                name: "👤 Ciudadano",
+                                value: name,
+                                inline: true
+                            },
+                            {
+                                name: "📍 Ubicación",
+                                value: location,
+                                inline: true
+                            }
+                        ],
+                        footer: {
+                            text: "Sistema de Alertas 112 • Roleplay Server",
+                            icon_url: "https://cdn-icons-png.flaticon.com/512/1022/1022300.png"
+                        },
+                        timestamp: new Date().toISOString()
+                    }
+                ]
+            };
+
+            // Enviar petición
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    showNotification("✅ Alerta enviada correctamente a las unidades.", "success");
+                    // Limpiar formulario
+                    document.getElementById('name').value = "";
+                    document.getElementById('location').value = "";
+                    document.getElementById('message').value = "";
+                } else {
+                    showNotification("❌ Error al enviar. Revisa la consola o el Webhook.", "error");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification("❌ Error de conexión.", "error");
+            });
+        }
+
+        function showNotification(text, type) {
+            const notif = document.getElementById('notification');
+            notif.innerText = text;
+            notif.style.display = 'block';
+            notif.className = 'notification ' + (type === 'success' ? 'notif-success' : 'notif-error');
+            
+            setTimeout(() => {
+                notif.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
