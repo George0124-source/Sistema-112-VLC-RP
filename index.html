@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central 112 - Control de Emergencias VLC:RP</title>
+    <title>Central 112 - Acceso Seguro VLC:RP</title>
     <style>
-        /* --- ESTILOS GENERALES --- */
+        /* --- ESTILOS GENERALES (Modo Oscuro Profesional) --- */
         :root {
             --cnp-blue: #002D62;
-            --dark-bg: #121212;
             --panel-bg: #1E1E1E;
             --text-main: #E0E0E0;
-            --accent: #007bff;
-            --danger: #dc3545;
+            --accent: #5865F2; /* Discord Blue */
             --success: #28a745;
             
+            /* Roles */
             --policia: #002D62;
             --ems: #dc3545;
             --bomberos: #e67e22;
@@ -24,7 +23,7 @@
         body { 
             font-family: 'Segoe UI', 'Roboto', sans-serif; 
             margin: 0; 
-            background: radial-gradient(circle at center, #1a2a3a 0%, #000000 100%); 
+            background: radial-gradient(circle at center, #111 0%, #000 100%); 
             color: var(--text-main); 
             height: 100vh;
             display: flex;
@@ -39,141 +38,177 @@
             border-radius: 12px; 
             width: 450px; 
             text-align: center; 
-            border-top: 4px solid var(--cnp-blue); 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7); 
-            position: relative;
+            border-top: 4px solid var(--accent); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
             backdrop-filter: blur(10px);
+            position: relative;
             z-index: 10;
-            border-bottom: 1px solid #333;
         }
 
-        h2 { margin-top: 0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: white; }
-        p.subtitle { color: #888; font-size: 13px; margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 15px; }
-
-        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-
-        .service-btn {
-            padding: 15px;
-            background: #252525;
-            border: 1px solid #3a3a3a;
-            color: #aaa;
-            border-radius: 8px;
+        /* PANTALLA DE LOGIN */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        
+        .discord-btn {
+            background: #5865F2;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 25px;
             text-transform: uppercase;
-            font-size: 11px;
             letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
         }
+        .discord-btn:hover { background: #4752c4; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(88, 101, 242, 0.6); }
 
-        .service-btn:hover { background: #333; border-color: #555; }
-        .service-btn.active.policia { background: var(--policia); border-color: #4a90e2; color: white; box-shadow: 0 0 15px rgba(0, 45, 98, 0.4); }
-        .service-btn.active.ems { background: var(--ems); border-color: #ff6b6b; color: white; box-shadow: 0 0 15px rgba(220, 53, 69, 0.4); }
-        .service-btn.active.bomberos { background: var(--bomberos); border-color: #ffb973; color: white; box-shadow: 0 0 15px rgba(230, 126, 34, 0.4); }
-        .service-btn.active.mecanicos { background: var(--mecanicos); border-color: #ffeaa7; color: black; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
+        /* PANTALLA DEL FORMULARIO (Oculta por defecto) */
+        #form-screen { display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        h2 { margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 2px; color: white; font-weight: 800; }
+        p.subtitle { color: #999; font-size: 13px; margin-bottom: 30px; line-height: 1.5; }
+
+        /* Tarjeta de Usuario Logueado */
+        .user-badge {
+            background: #151515;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+        }
+        .user-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--success); }
+        .user-info { text-align: left; }
+        .user-name { font-weight: 700; font-size: 14px; color: white; }
+        .user-id { font-size: 11px; color: #666; font-family: monospace; }
+        .logout-link { font-size: 11px; color: #dc3545; text-decoration: none; margin-left: auto; cursor: pointer; }
+
+        /* Botones de Servicio */
+        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .service-btn { padding: 15px; background: #252525; border: 1px solid #3a3a3a; color: #aaa; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; text-transform: uppercase; font-size: 11px; }
+        .service-btn:hover { background: #333; }
+        .service-btn.active.policia { background: var(--policia); color: white; border-color: #4a90e2; box-shadow: 0 0 10px rgba(0,45,98,0.5); }
+        .service-btn.active.ems { background: var(--ems); color: white; border-color: #ff6b6b; box-shadow: 0 0 10px rgba(220,53,69,0.5); }
+        .service-btn.active.bomberos { background: var(--bomberos); color: white; border-color: #ffb973; box-shadow: 0 0 10px rgba(230,126,34,0.5); }
+        .service-btn.active.mecanicos { background: var(--mecanicos); color: black; border-color: #ffeaa7; box-shadow: 0 0 10px rgba(241,196,15,0.5); }
+
+        /* Inputs */
         .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; font-size: 11px; color: #666; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .input-group label { display: block; font-size: 11px; color: #777; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
         
-        input, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            background: #141414; 
-            border: 1px solid #333; 
-            color: white; 
-            border-radius: 6px; 
-            box-sizing: border-box; 
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
-            transition: border 0.2s;
-        }
-        
+        input, textarea { width: 100%; padding: 12px; background: #141414; border: 1px solid #333; color: white; border-radius: 6px; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; font-size: 14px; transition: border 0.2s; }
+        input:read-only { background: #0f0f0f; color: #555; border-color: #222; cursor: default; }
         input:focus, textarea:focus { border-color: var(--accent); outline: none; background: #1a1a1a; }
-        textarea { resize: vertical; min-height: 80px; }
+        
+        .btn-send { width: 100%; padding: 14px; background: var(--success); color: white; border: none; font-weight: 700; cursor: pointer; border-radius: 6px; margin-top: 10px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-send:hover { filter: brightness(1.1); }
+        .btn-send:disabled { background: #444; cursor: not-allowed; }
 
-        .btn-send { 
-            width: 100%; 
-            padding: 14px; 
-            background: var(--success); 
-            color: white; 
-            border: none; 
-            font-weight: 700; 
-            cursor: pointer; 
-            border-radius: 6px; 
-            font-size: 14px;
-            margin-top: 15px;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .btn-send:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .btn-send:active { transform: translateY(0); }
-        .btn-send:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
+        .notification { display: none; margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13px; }
+        .notif-success { background: rgba(40,167,69,0.15); color: #4cd16e; border: 1px solid rgba(40,167,69,0.3); }
+        .notif-error { background: rgba(220,53,69,0.15); color: #ff6b6b; border: 1px solid rgba(220,53,69,0.3); }
 
-        .notification { display: none; margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13px; animation: fadeIn 0.3s ease-in-out; }
-        .notif-success { background: rgba(40, 167, 69, 0.15); color: #4cd16e; border: 1px solid rgba(40, 167, 69, 0.3); }
-        .notif-error { background: rgba(220, 53, 69, 0.15); color: #ff6b6b; border: 1px solid rgba(220, 53, 69, 0.3); }
-
-        /* FOOTER */
-        .pro-footer { position: fixed; bottom: 25px; right: 30px; text-align: right; z-index: 100; opacity: 0.6; transition: opacity 0.3s ease, transform 0.3s ease; cursor: default; user-select: none; }
+        /* Footer Profesional */
+        .pro-footer { position: fixed; bottom: 25px; right: 30px; text-align: right; z-index: 100; opacity: 0.6; transition: 0.3s; cursor: default; }
         .pro-footer:hover { opacity: 1; transform: translateX(-5px); }
-        .server-brand { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; line-height: 1; margin-bottom: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .server-brand { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; line-height: 1; }
         .server-brand span { color: var(--accent); }
-        .dev-credits { font-size: 11px; color: #888; font-weight: 500; letter-spacing: 0.5px; border-top: 1px solid #444; padding-top: 4px; display: inline-block; }
-        .dev-names { color: #ccc; font-weight: 700; }
+        .dev-credits { font-size: 11px; color: #888; border-top: 1px solid #444; padding-top: 4px; margin-top: 4px; display: inline-block; }
     </style>
 </head>
 <body>
 
     <div class="dispatch-container">
-        <h2>CENTRAL 112</h2>
-        <p class="subtitle">Sistema de Gestión de Emergencias VLC:RP</p>
-
-        <!-- Selector de Servicios -->
-        <div class="service-grid">
-            <div class="service-btn" onclick="selectService('policia', this)">👮‍♂️ Policía</div>
-            <div class="service-btn" onclick="selectService('ems', this)">🚑 S.A.M.U</div>
-            <div class="service-btn" onclick="selectService('bomberos', this)">🚒 Bomberos</div>
-            <div class="service-btn" onclick="selectService('mecanicos', this)">🔧 Mecánicos</div>
+        
+        <!-- PANTALLA 1: LOGIN (Se ve si no estás logueado) -->
+        <div id="login-screen">
+            <h2 style="color:var(--accent)">Acceso Seguro</h2>
+            <p class="subtitle">
+                Sistema de Emergencias Oficial 112.<br>
+                Debes identificarte para enviar alertas.
+            </p>
+            <button class="discord-btn" onclick="loginWithDiscord()">
+                <!-- Icono Discord SVG -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 00.0306-.0525c3.9041 1.7931 8.1801 1.7931 12.0129 0a.0739.0739 0 00.0292.0506c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.419-2.1568 2.419z"/></svg>
+                Entrar con Discord
+            </button>
         </div>
 
-        <!-- NUEVOS CAMPOS OBLIGATORIOS -->
-        <div class="input-group">
-            <label>TU ID DE DISCORD (OBLIGATORIO)</label>
-            <input type="text" id="discordId" placeholder="Ej: 13982281269..." required>
+        <!-- PANTALLA 2: FORMULARIO (Solo visible al loguearse) -->
+        <div id="form-screen">
+            
+            <!-- Datos del Usuario Detectado -->
+            <div class="user-badge">
+                <img id="displayAvatar" class="user-avatar" src="" alt="Avatar">
+                <div class="user-info">
+                    <div id="displayUsername" class="user-name">Cargando...</div>
+                    <div id="displayId" class="user-id">ID: ...</div>
+                </div>
+                <a onclick="logout()" class="logout-link">SALIR</a>
+            </div>
+
+            <h2>CENTRAL 112</h2>
+            
+            <div class="service-grid">
+                <div class="service-btn" onclick="selectService('policia', this)">👮‍♂️ Policía</div>
+                <div class="service-btn" onclick="selectService('ems', this)">🚑 S.A.M.U</div>
+                <div class="service-btn" onclick="selectService('bomberos', this)">🚒 Bomberos</div>
+                <div class="service-btn" onclick="selectService('mecanicos', this)">🔧 Mecánicos</div>
+            </div>
+
+            <!-- ID Oculta pero presente para el envío -->
+            <input type="hidden" id="discordId">
+
+            <div class="input-group">
+                <label>NOMBRE DEL CIUDADANO (IC)</label>
+                <input type="text" id="name" placeholder="Nombre y Apellidos">
+            </div>
+
+            <div class="input-group">
+                <label>UBICACIÓN EXACTA</label>
+                <input type="text" id="location" placeholder="Calle, número o referencia">
+            </div>
+
+            <div class="input-group">
+                <label>DETALLES DE LA EMERGENCIA</label>
+                <textarea id="message" placeholder="Describa la situación..."></textarea>
+            </div>
+
+            <button class="btn-send" id="sendBtn">ENVIAR AVISO 📡</button>
+            <div id="notification" class="notification"></div>
         </div>
 
-        <div class="input-group">
-            <label>NOMBRE DEL CIUDADANO (IC)</label>
-            <input type="text" id="name" placeholder="Nombre y Apellidos">
-        </div>
-
-        <div class="input-group">
-            <label>UBICACIÓN EXACTA</label>
-            <input type="text" id="location" placeholder="Calle, número o referencia">
-        </div>
-
-        <div class="input-group">
-            <label>DETALLES DE LA EMERGENCIA</label>
-            <textarea id="message" placeholder="Describa la situación..."></textarea>
-        </div>
-
-        <button class="btn-send" id="sendBtn">ENVIAR AVISO 📡</button>
-
-        <div id="notification" class="notification"></div>
     </div>
 
     <!-- Footer -->
     <div class="pro-footer">
         <div class="server-brand">VLC<span>:RP</span></div>
-        <div class="dev-credits">
-            System Dev by <span class="dev-names">george00_. / Zyn0rX ツ</span>
-        </div>
+        <div class="dev-credits">Dev by <span style="color:#ccc">george00_. / Zyn0rX ツ</span></div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPTS -->
     <script type="module">
-        // --- 1. CONFIGURACIÓN FIREBASE (RECUERDA PEGAR TUS DATOS AQUÍ) ---
+        // -------------------------------------------------------------------
+        // ⚙️ CONFIGURACIÓN CRÍTICA (RELLENA ESTO)
+        // -------------------------------------------------------------------
+        
+        const DISCORD_CLIENT_ID = "1447932076056776755"; // <--- ¡PEGA EL ID AQUÍ!
+        
+        // ¡¡NO TOQUES ESTA URL!! Es la de tu web actual
+        const REDIRECT_URI = "https://george0124-source.github.io/Sistema-112-VLC-RP/"; 
+        
+        // -------------------------------------------------------------------
+        
+        // Configuración Firebase (PEGA TU CONFIGURACIÓN ABAJO)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
@@ -185,153 +220,184 @@ const firebaseConfig = {
   messagingSenderId: "1055656945278",
   appId: "1:1055656945278:web:926a37cd97cc15a5131a2f"
 };
-        // Inicializar Firebase
-        let app, db;
-        try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            console.log("Firebase conectado");
-        } catch (e) {
-            console.error("Error Firebase:", e);
-        }
 
-        // --- WEBHOOK DISCORD ---
+        // Webhook de Discord (Ya configurado)
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1447737113683562559/R5WwUDWAIwYEoxB6I5ZKIruX3AuIYi_AllPAnVyYbjVNfc7DPliBish9q0GutvwhpMdN";
 
-        let currentService = null;
-        let serviceColor = null;
-        let serviceName = null;
-        let servicePing = ""; 
+        // Inicializar Firebase con seguridad
+        let db;
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            console.log("Base de datos conectada.");
+        } catch(e) { console.error("Falta configurar Firebase:", e); }
 
-        // Función Global para Selección
-        window.selectService = function(service, element) {
-            document.querySelectorAll('.service-btn').forEach(btn => {
-                btn.classList.remove('active', 'policia', 'ems', 'bomberos', 'mecanicos');
-            });
-            element.classList.add('active', service);
-            currentService = service;
 
-            switch(service) {
-                case 'policia':
-                    serviceColor = 3447003; 
-                    serviceName = "Policia Nacional/Guardia Civil";
-                    servicePing = "<@&1398228126919561216>"; 
-                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--policia)";
-                    break;
-                case 'ems':
-                    serviceColor = 15158332; 
-                    serviceName = "Servicios Medicos (S.A.M.U)";
-                    servicePing = "<@&1398274968705568878>"; 
-                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--ems)";
-                    break;
-                case 'bomberos':
-                    serviceColor = 15105570; 
-                    serviceName = "Bomberos";
-                    servicePing = "<@&1398274299151913061>"; 
-                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--bomberos)";
-                    break;
-                case 'mecanicos':
-                    serviceColor = 16776960; 
-                    serviceName = "Asistencia En Carretera";
-                    servicePing = ""; 
-                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--mecanicos)";
-                    break;
+        // --- SISTEMA DE LOGIN Y SESIÓN ---
+        
+        window.onload = () => {
+            // Comprobar si venimos de Discord (Url Fragment)
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const accessToken = fragment.get('access_token');
+            const storedToken = localStorage.getItem('discord_token');
+
+            if (accessToken) {
+                // Si es un login nuevo, guardamos el token
+                localStorage.setItem('discord_token', accessToken);
+                // Limpiamos la URL para que no se vea feo
+                window.history.pushState({}, document.title, window.location.pathname);
+                loadUserData(accessToken);
+            } else if (storedToken) {
+                // Si ya había iniciado sesión antes
+                loadUserData(storedToken);
+            } else {
+                // Si no hay sesión, mostramos botón login
+                document.getElementById('login-screen').style.display = 'flex';
             }
         };
 
-        // Envío del Formulario
+        function loadUserData(token) {
+            fetch('https://discord.com/api/users/@me', {
+                headers: { authorization: `Bearer ${token}` }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Token expirado');
+                return res.json();
+            })
+            .then(user => {
+                // Ocultar Login / Mostrar Formulario
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('form-screen').style.display = 'block';
+
+                // Rellenar datos visuales
+                document.getElementById('discordId').value = user.id;
+                document.getElementById('displayUsername').innerText = user.username; // Usamos username nuevo sistema
+                document.getElementById('displayId').innerText = `ID: ${user.id}`;
+                
+                // Avatar (si no tiene, pone uno default)
+                if(user.avatar) {
+                    document.getElementById('displayAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+                } else {
+                    document.getElementById('displayAvatar').src = "https://cdn.discordapp.com/embed/avatars/0.png";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                logout(); // Si el token falla, lo mandamos al login
+            });
+        }
+
+        // Función Login
+        window.loginWithDiscord = function() {
+            if (DISCORD_CLIENT_ID === "AQUI_TU_CLIENT_ID_DE_DISCORD") {
+                alert("⚠ ERROR: El dueño de la web no ha configurado el CLIENT ID en el código.");
+                return;
+            }
+            const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
+            window.location.href = url;
+        };
+
+        // Función Logout
+        window.logout = function() {
+            localStorage.removeItem('discord_token');
+            window.location.reload();
+        };
+
+
+        // --- LÓGICA DEL FORMULARIO 112 ---
+        
+        let currentService = null;
+        let serviceColor = null;
+        let serviceName = null;
+        let servicePing = "";
+
+        window.selectService = function(service, element) {
+            document.querySelectorAll('.service-btn').forEach(btn => btn.classList.remove('active', 'policia', 'ems', 'bomberos', 'mecanicos'));
+            element.classList.add('active', service);
+            currentService = service;
+            
+            switch(service) {
+                case 'policia': 
+                    serviceColor = 3447003; serviceName = "Policia Nacional"; servicePing = "<@&1398228126919561216>"; 
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--policia)"; break;
+                case 'ems': 
+                    serviceColor = 15158332; serviceName = "S.A.M.U"; servicePing = "<@&1398274968705568878>"; 
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--ems)"; break;
+                case 'bomberos': 
+                    serviceColor = 15105570; serviceName = "Bomberos"; servicePing = "<@&1398274299151913061>"; 
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--bomberos)"; break;
+                case 'mecanicos': 
+                    serviceColor = 16776960; serviceName = "Mecánicos"; servicePing = ""; 
+                    document.querySelector('.dispatch-container').style.borderTopColor = "var(--mecanicos)"; break;
+            }
+        };
+
         document.getElementById('sendBtn').addEventListener('click', async () => {
-            const discordId = document.getElementById('discordId').value.trim();
+            const discordId = document.getElementById('discordId').value;
             const name = document.getElementById('name').value;
             const location = document.getElementById('location').value;
             const message = document.getElementById('message').value;
             const btn = document.getElementById('sendBtn');
+            const username = document.getElementById('displayUsername').innerText; // Pillamos el nombre de Discord
 
-            // --- VALIDACIONES ---
-            if (!currentService) {
-                showNotification("⚠ Selecciona un departamento.", "error");
-                return;
-            }
-            // Validación estricta de ID de Discord
-            if (!discordId) {
-                showNotification("⚠ TU ID DE DISCORD ES OBLIGATORIA.", "error");
-                document.getElementById('discordId').style.borderColor = "red";
-                return;
-            }
-            if (isNaN(discordId) || discordId.length < 15) {
-                showNotification("⚠ La ID de Discord debe ser numérica (Activa modo desarrollador para copiarla).", "error");
-                return;
-            }
-            
-            if (!name || !location || !message) {
-                showNotification("⚠ Rellena todos los campos.", "error");
+            if (!currentService || !name || !location || !message) {
+                showNotification("⚠ Por favor, selecciona servicio y rellena los campos.", "error");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "REGISTRANDO...";
+            btn.innerText = "VERIFICANDO Y ENVIANDO...";
 
-            // 1. Preparar Payload Discord
-            const discordPayload = {
+            const payload = {
                 username: "Central 112 VLC:RP",
-                content: servicePing, 
+                content: servicePing,
                 avatar_url: "https://media.discordapp.net/attachments/1438632014847672431/1447739898575454290/image.png?ex=6938b859&is=693766d9&hm=08c8e01134179da0d005c82b3a6075dee32392ad7e029b796dd95ee9f8519f25&=&format=png&quality=lossless&width=161&height=161",
                 embeds: [{
-                    title: `🚨 NUEVO AVISO: ${serviceName}`,
+                    title: `🚨 ALERTA VERIFICADA: ${serviceName}`,
                     description: `>>> **${message}**`,
                     color: serviceColor,
                     fields: [
-                        { 
-                            name: "🆔 Reportado por (Discord)", 
-                            value: `<@${discordId}> \n(ID: ${discordId})`, // Mención clickeable
-                            inline: true 
-                        },
                         { name: "👤 Ciudadano (IC)", value: name, inline: true },
-                        { name: "📍 Ubicación", value: location, inline: false }
+                        { name: "📍 Ubicación", value: `\`${location}\``, inline: true },
+                        { name: "🔐 Identidad Verificada", value: `Solicitado por: **${username}**\n<@${discordId}>`, inline: false }
                     ],
-                    footer: {
-                        text: `Log ID: ${Date.now().toString().slice(-6)} • VLC:RP System`,
-                        icon_url: "https://cdn-icons-png.flaticon.com/512/1022/1022300.png"
-                    },
+                    footer: { text: `VLC:RP Secure System • ID: ${discordId}`, icon_url: "https://cdn-icons-png.flaticon.com/512/1022/1022300.png" },
                     timestamp: new Date().toISOString()
                 }]
             };
 
             try {
-                // 2. GUARDAR EN FIREBASE
+                // Guardar en Firebase
                 if(db) {
                     await addDoc(collection(db, "avisos_112"), {
-                        discord_id: discordId, // ID Discord para banear trolls si es necesario
+                        discord_id: discordId,
+                        discord_username: username,
                         service: serviceName,
                         citizen_name: name,
                         location: location,
                         message: message,
                         timestamp: serverTimestamp(),
-                        date_string: new Date().toLocaleString()
+                        verified: true
                     });
                 }
 
-                // 3. ENVIAR A DISCORD
-                const response = await fetch(WEBHOOK_URL, {
+                // Enviar a Discord
+                const res = await fetch(WEBHOOK_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(discordPayload)
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
                 });
 
-                if (response.ok) {
-                    showNotification("✅ Aviso enviado y usuario registrado.", "success");
-                    // Limpiar
+                if(res.ok) {
+                    showNotification("✅ Identidad confirmada. Aviso enviado.", "success");
                     document.getElementById('name').value = "";
                     document.getElementById('location').value = "";
                     document.getElementById('message').value = "";
-                    // Opcional: No limpiamos la ID de Discord por si quiere mandar otro aviso rápido
-                    document.getElementById('discordId').style.borderColor = "#333";
                 } else {
-                    showNotification("❌ Error de Webhook.", "error");
+                    showNotification("❌ Error interno del Webhook.", "error");
                 }
-
-            } catch (error) {
-                console.error("Error:", error);
+            } catch(e) {
+                console.error(e);
                 showNotification("❌ Error de conexión.", "error");
             } finally {
                 btn.disabled = false;
