@@ -184,22 +184,22 @@
             switch(service) {
                 case 'policia':
                     serviceColor = 3447003; // Azul Oscuro
-                    serviceName = "POLICÍA NACIONAL";
+                    serviceName = "Policia Nacional/Guardia Civil";
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--policia)";
                     break;
                 case 'ems':
                     serviceColor = 15158332; // Rojo
-                    serviceName = "SERVICIOS MÉDICOS (EMS)";
+                    serviceName = "Servicios Medicos  (S.A.M.U)";
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--ems)";
                     break;
                 case 'bomberos':
                     serviceColor = 15105570; // Naranja
-                    serviceName = "BOMBEROS";
+                    serviceName = "Bomberos";
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--bomberos)";
                     break;
                 case 'mecanicos':
                     serviceColor = 16776960; // Amarillo
-                    serviceName = "ASISTENCIA EN CARRETERA";
+                    serviceName = "Asistencia En Carretera";
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--mecanicos)";
                     break;
             }
@@ -224,8 +224,8 @@
 
             // Preparar el Embed de Discord
             const payload = {
-                username: "Central 112",
-                avatar_url: "https://cdn-icons-png.flaticon.com/512/564/564619.png",
+                username: "Central 112 VLC:RP",
+                avatar_url: "https://media.discordapp.net/attachments/1438632014847672431/1447739898575454290/image.png?ex=6938b859&is=693766d9&hm=08c8e01134179da0d005c82b3a6075dee32392ad7e029b796dd95ee9f8519f25&=&format=png&quality=lossless&width=161&height=161",
                 embeds: [
                     {
                         title: `🚨 LLAMADA DE EMERGENCIA: ${serviceName}`,
@@ -244,7 +244,7 @@
                             }
                         ],
                         footer: {
-                            text: "Sistema de Alertas 112 • Roleplay Server",
+                            text: "Sistema de Alertas 112 • VLC:RP",
                             icon_url: "https://cdn-icons-png.flaticon.com/512/1022/1022300.png"
                         },
                         timestamp: new Date().toISOString()
