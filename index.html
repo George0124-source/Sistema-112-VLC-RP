@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central de Emergencias 112 - VLC:RP</title>
+    <title>Central 112 - Control de Emergencias VLC:RP</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root {
@@ -15,7 +15,6 @@
             --danger: #dc3545;
             --success: #28a745;
             
-            /* Colores Roles */
             --policia: #002D62;
             --ems: #dc3545;
             --bomberos: #e67e22;
@@ -34,7 +33,6 @@
             overflow: hidden;
         }
 
-        /* Contenedor Principal */
         .dispatch-container { 
             background: rgba(30, 30, 30, 0.95); 
             padding: 40px; 
@@ -49,30 +47,10 @@
             border-bottom: 1px solid #333;
         }
 
-        h2 { 
-            margin-top: 0; 
-            margin-bottom: 10px; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            font-weight: 700;
-            color: white;
-        }
-        
-        p.subtitle { 
-            color: #888; 
-            font-size: 13px; 
-            margin-bottom: 25px; 
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
-        }
+        h2 { margin-top: 0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; color: white; }
+        p.subtitle { color: #888; font-size: 13px; margin-bottom: 25px; border-bottom: 1px solid #333; padding-bottom: 15px; }
 
-        /* Selector de Servicios */
-        .service-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
 
         .service-btn {
             padding: 15px;
@@ -89,14 +67,11 @@
         }
 
         .service-btn:hover { background: #333; border-color: #555; }
-
-        /* Estados Activos */
         .service-btn.active.policia { background: var(--policia); border-color: #4a90e2; color: white; box-shadow: 0 0 15px rgba(0, 45, 98, 0.4); }
         .service-btn.active.ems { background: var(--ems); border-color: #ff6b6b; color: white; box-shadow: 0 0 15px rgba(220, 53, 69, 0.4); }
         .service-btn.active.bomberos { background: var(--bomberos); border-color: #ffb973; color: white; box-shadow: 0 0 15px rgba(230, 126, 34, 0.4); }
         .service-btn.active.mecanicos { background: var(--mecanicos); border-color: #ffeaa7; color: black; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
 
-        /* Inputs */
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; font-size: 11px; color: #666; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
         
@@ -116,7 +91,6 @@
         input:focus, textarea:focus { border-color: var(--accent); outline: none; background: #1a1a1a; }
         textarea { resize: vertical; min-height: 80px; }
 
-        /* Botón Enviar */
         .btn-send { 
             width: 100%; 
             padding: 14px; 
@@ -134,63 +108,19 @@
         }
         .btn-send:hover { filter: brightness(1.1); transform: translateY(-1px); }
         .btn-send:active { transform: translateY(0); }
+        .btn-send:disabled { background: #555; cursor: not-allowed; opacity: 0.7; }
 
-        /* Notificación */
-        .notification {
-            display: none;
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
+        .notification { display: none; margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13px; animation: fadeIn 0.3s ease-in-out; }
         .notif-success { background: rgba(40, 167, 69, 0.15); color: #4cd16e; border: 1px solid rgba(40, 167, 69, 0.3); }
         .notif-error { background: rgba(220, 53, 69, 0.15); color: #ff6b6b; border: 1px solid rgba(220, 53, 69, 0.3); }
 
-        /* --- FOOTER PROFESIONAL --- */
-        .pro-footer {
-            position: fixed;
-            bottom: 25px;
-            right: 30px;
-            text-align: right;
-            z-index: 100;
-            opacity: 0.6;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            cursor: default;
-            user-select: none;
-        }
-
-        .pro-footer:hover {
-            opacity: 1;
-            transform: translateX(-5px);
-        }
-
-        .server-brand {
-            font-size: 18px;
-            font-weight: 900;
-            color: #fff;
-            letter-spacing: 1px;
-            line-height: 1;
-            margin-bottom: 4px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
+        /* FOOTER */
+        .pro-footer { position: fixed; bottom: 25px; right: 30px; text-align: right; z-index: 100; opacity: 0.6; transition: opacity 0.3s ease, transform 0.3s ease; cursor: default; user-select: none; }
+        .pro-footer:hover { opacity: 1; transform: translateX(-5px); }
+        .server-brand { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; line-height: 1; margin-bottom: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         .server-brand span { color: var(--accent); }
-
-        .dev-credits {
-            font-size: 11px;
-            color: #888;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            border-top: 1px solid #444;
-            padding-top: 4px;
-            display: inline-block;
-        }
-
+        .dev-credits { font-size: 11px; color: #888; font-weight: 500; letter-spacing: 0.5px; border-top: 1px solid #444; padding-top: 4px; display: inline-block; }
         .dev-names { color: #ccc; font-weight: 700; }
-
     </style>
 </head>
 <body>
@@ -207,9 +137,14 @@
             <div class="service-btn" onclick="selectService('mecanicos', this)">🔧 Mecánicos</div>
         </div>
 
-        <!-- Formulario -->
+        <!-- NUEVOS CAMPOS OBLIGATORIOS -->
         <div class="input-group">
-            <label>NOMBRE DEL CIUDADANO</label>
+            <label>TU ID DE DISCORD (OBLIGATORIO)</label>
+            <input type="text" id="discordId" placeholder="Ej: 13982281269..." required>
+        </div>
+
+        <div class="input-group">
+            <label>NOMBRE DEL CIUDADANO (IC)</label>
             <input type="text" id="name" placeholder="Nombre y Apellidos">
         </div>
 
@@ -223,12 +158,12 @@
             <textarea id="message" placeholder="Describa la situación..."></textarea>
         </div>
 
-        <button class="btn-send" onclick="sendAlert()">ENVIAR AVISO 📡</button>
+        <button class="btn-send" id="sendBtn">ENVIAR AVISO 📡</button>
 
         <div id="notification" class="notification"></div>
     </div>
 
-    <!-- Footer Profesional de Derechos -->
+    <!-- Footer -->
     <div class="pro-footer">
         <div class="server-brand">VLC<span>:RP</span></div>
         <div class="dev-credits">
@@ -236,8 +171,31 @@
         </div>
     </div>
 
-    <script>
-        // --- CONFIGURACIÓN ---
+    <!-- SCRIPT -->
+    <script type="module">
+        // --- 1. CONFIGURACIÓN FIREBASE (RECUERDA PEGAR TUS DATOS AQUÍ) ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBK8ch-lSXT32GdW1cnaP9H0enKlUkvv_U",
+  authDomain: "central-vlc-rp.firebaseapp.com",
+  projectId: "central-vlc-rp",
+  storageBucket: "central-vlc-rp.firebasestorage.app",
+  messagingSenderId: "1055656945278",
+  appId: "1:1055656945278:web:926a37cd97cc15a5131a2f"
+};
+        // Inicializar Firebase
+        let app, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            console.log("Firebase conectado");
+        } catch (e) {
+            console.error("Error Firebase:", e);
+        }
+
+        // --- WEBHOOK DISCORD ---
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1447737113683562559/R5WwUDWAIwYEoxB6I5ZKIruX3AuIYi_AllPAnVyYbjVNfc7DPliBish9q0GutvwhpMdN";
 
         let currentService = null;
@@ -245,101 +203,141 @@
         let serviceName = null;
         let servicePing = ""; 
 
-        function selectService(service, element) {
-            // Limpiar selección previa
+        // Función Global para Selección
+        window.selectService = function(service, element) {
             document.querySelectorAll('.service-btn').forEach(btn => {
                 btn.classList.remove('active', 'policia', 'ems', 'bomberos', 'mecanicos');
             });
-
-            // Activar botón
             element.classList.add('active', service);
             currentService = service;
 
-            // Configurar variables según servicio
             switch(service) {
                 case 'policia':
-                    serviceColor = 3447003; // Azul
+                    serviceColor = 3447003; 
                     serviceName = "Policia Nacional/Guardia Civil";
                     servicePing = "<@&1398228126919561216>"; 
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--policia)";
                     break;
                 case 'ems':
-                    serviceColor = 15158332; // Rojo
+                    serviceColor = 15158332; 
                     serviceName = "Servicios Medicos (S.A.M.U)";
                     servicePing = "<@&1398274968705568878>"; 
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--ems)";
                     break;
                 case 'bomberos':
-                    serviceColor = 15105570; // Naranja
+                    serviceColor = 15105570; 
                     serviceName = "Bomberos";
                     servicePing = "<@&1398274299151913061>"; 
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--bomberos)";
                     break;
                 case 'mecanicos':
-                    serviceColor = 16776960; // Amarillo
+                    serviceColor = 16776960; 
                     serviceName = "Asistencia En Carretera";
-                    servicePing = ""; // Sin ping
+                    servicePing = ""; 
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--mecanicos)";
                     break;
             }
-        }
+        };
 
-        function sendAlert() {
+        // Envío del Formulario
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const discordId = document.getElementById('discordId').value.trim();
             const name = document.getElementById('name').value;
             const location = document.getElementById('location').value;
             const message = document.getElementById('message').value;
+            const btn = document.getElementById('sendBtn');
 
+            // --- VALIDACIONES ---
             if (!currentService) {
-                showNotification("⚠ Selecciona un departamento de emergencia.", "error");
+                showNotification("⚠ Selecciona un departamento.", "error");
                 return;
             }
+            // Validación estricta de ID de Discord
+            if (!discordId) {
+                showNotification("⚠ TU ID DE DISCORD ES OBLIGATORIA.", "error");
+                document.getElementById('discordId').style.borderColor = "red";
+                return;
+            }
+            if (isNaN(discordId) || discordId.length < 15) {
+                showNotification("⚠ La ID de Discord debe ser numérica (Activa modo desarrollador para copiarla).", "error");
+                return;
+            }
+            
             if (!name || !location || !message) {
-                showNotification("⚠ Completa todos los campos requeridos.", "error");
+                showNotification("⚠ Rellena todos los campos.", "error");
                 return;
             }
 
-            const payload = {
+            btn.disabled = true;
+            btn.innerText = "REGISTRANDO...";
+
+            // 1. Preparar Payload Discord
+            const discordPayload = {
                 username: "Central 112 VLC:RP",
-                content: servicePing, // PING FUERA DEL EMBED
+                content: servicePing, 
                 avatar_url: "https://media.discordapp.net/attachments/1438632014847672431/1447739898575454290/image.png?ex=6938b859&is=693766d9&hm=08c8e01134179da0d005c82b3a6075dee32392ad7e029b796dd95ee9f8519f25&=&format=png&quality=lossless&width=161&height=161",
-                embeds: [
-                    {
-                        title: `🚨 NUEVO AVISO: ${serviceName}`,
-                        description: `>>> **${message}**`, // Formato de cita para resaltar
-                        color: serviceColor,
-                        fields: [
-                            { name: "👤 Solicitante", value: name, inline: true },
-                            { name: "📍 Dirección", value: `\`${location}\``, inline: true }
-                        ],
-                        footer: {
-                            text: "VLC:RP Emergency System • Developed by george00_. / Zyn0rX ツ",
-                            icon_url: "https://cdn-icons-png.flaticon.com/512/1022/1022300.png"
+                embeds: [{
+                    title: `🚨 NUEVO AVISO: ${serviceName}`,
+                    description: `>>> **${message}**`,
+                    color: serviceColor,
+                    fields: [
+                        { 
+                            name: "🆔 Reportado por (Discord)", 
+                            value: `<@${discordId}> \n(ID: ${discordId})`, // Mención clickeable
+                            inline: true 
                         },
-                        timestamp: new Date().toISOString()
-                    }
-                ]
+                        { name: "👤 Ciudadano (IC)", value: name, inline: true },
+                        { name: "📍 Ubicación", value: location, inline: false }
+                    ],
+                    footer: {
+                        text: `Log ID: ${Date.now().toString().slice(-6)} • VLC:RP System`,
+                        icon_url: "https://cdn-icons-png.flaticon.com/512/1022/1022300.png"
+                    },
+                    timestamp: new Date().toISOString()
+                }]
             };
 
-            fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
+            try {
+                // 2. GUARDAR EN FIREBASE
+                if(db) {
+                    await addDoc(collection(db, "avisos_112"), {
+                        discord_id: discordId, // ID Discord para banear trolls si es necesario
+                        service: serviceName,
+                        citizen_name: name,
+                        location: location,
+                        message: message,
+                        timestamp: serverTimestamp(),
+                        date_string: new Date().toLocaleString()
+                    });
+                }
+
+                // 3. ENVIAR A DISCORD
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(discordPayload)
+                });
+
                 if (response.ok) {
-                    showNotification("✅ Aviso transmitido a las unidades.", "success");
+                    showNotification("✅ Aviso enviado y usuario registrado.", "success");
+                    // Limpiar
                     document.getElementById('name').value = "";
                     document.getElementById('location').value = "";
                     document.getElementById('message').value = "";
+                    // Opcional: No limpiamos la ID de Discord por si quiere mandar otro aviso rápido
+                    document.getElementById('discordId').style.borderColor = "#333";
                 } else {
-                    showNotification("❌ Error de comunicación con la central.", "error");
+                    showNotification("❌ Error de Webhook.", "error");
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification("❌ Fallo de red.", "error");
-            });
-        }
+
+            } catch (error) {
+                console.error("Error:", error);
+                showNotification("❌ Error de conexión.", "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "ENVIAR AVISO 📡";
+            }
+        });
 
         function showNotification(text, type) {
             const notif = document.getElementById('notification');
