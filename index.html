@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central de Emergencias 112</title>
+    <title>Central de Emergencias 112 - VLC:RP</title>
     <style>
-        /* --- ESTILOS ORIGINALES --- */
+        /* --- ESTILOS GENERALES --- */
         :root {
             --cnp-blue: #002D62;
             --dark-bg: #121212;
@@ -23,177 +23,217 @@
         }
 
         body { 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', 'Roboto', sans-serif; 
             margin: 0; 
-            background: linear-gradient(135deg, #001f3f 0%, #000000 100%); 
+            background: radial-gradient(circle at center, #1a2a3a 0%, #000000 100%); 
             color: var(--text-main); 
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Evita scroll innecesario */
+            overflow: hidden;
         }
 
         /* Contenedor Principal */
         .dispatch-container { 
-            background: var(--panel-bg); 
+            background: rgba(30, 30, 30, 0.95); 
             padding: 40px; 
-            border-radius: 10px; 
+            border-radius: 12px; 
             width: 450px; 
             text-align: center; 
-            border-top: 5px solid var(--cnp-blue); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border-top: 4px solid var(--cnp-blue); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7); 
             position: relative;
+            backdrop-filter: blur(10px);
             z-index: 10;
+            border-bottom: 1px solid #333;
         }
 
-        h2 { margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
-        p { color: #888; font-size: 14px; margin-bottom: 25px; }
+        h2 { 
+            margin-top: 0; 
+            margin-bottom: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            font-weight: 700;
+            color: white;
+        }
+        
+        p.subtitle { 
+            color: #888; 
+            font-size: 13px; 
+            margin-bottom: 25px; 
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
 
         /* Selector de Servicios */
         .service-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
         .service-btn {
             padding: 15px;
-            background: #2b2b2b;
-            border: 2px solid #444;
+            background: #252525;
+            border: 1px solid #3a3a3a;
             color: #aaa;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            font-weight: 600;
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            font-size: 12px;
+            font-size: 11px;
+            letter-spacing: 0.5px;
         }
 
-        .service-btn:hover { background: #333; }
+        .service-btn:hover { background: #333; border-color: #555; }
 
-        /* Estados Activos (Seleccionados) */
-        .service-btn.active.policia { background: var(--policia); border-color: #4a90e2; color: white; }
-        .service-btn.active.ems { background: var(--ems); border-color: #ff6b6b; color: white; }
-        .service-btn.active.bomberos { background: var(--bomberos); border-color: #ffb973; color: white; }
-        .service-btn.active.mecanicos { background: var(--mecanicos); border-color: #ffeaa7; color: black; }
+        /* Estados Activos */
+        .service-btn.active.policia { background: var(--policia); border-color: #4a90e2; color: white; box-shadow: 0 0 15px rgba(0, 45, 98, 0.4); }
+        .service-btn.active.ems { background: var(--ems); border-color: #ff6b6b; color: white; box-shadow: 0 0 15px rgba(220, 53, 69, 0.4); }
+        .service-btn.active.bomberos { background: var(--bomberos); border-color: #ffb973; color: white; box-shadow: 0 0 15px rgba(230, 126, 34, 0.4); }
+        .service-btn.active.mecanicos { background: var(--mecanicos); border-color: #ffeaa7; color: black; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
 
         /* Inputs */
         .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; font-size: 12px; color: #888; font-weight: bold; margin-bottom: 5px; }
+        .input-group label { display: block; font-size: 11px; color: #666; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
         
         input, textarea { 
             width: 100%; 
             padding: 12px; 
-            background: #2b2b2b; 
-            border: 1px solid #444; 
+            background: #141414; 
+            border: 1px solid #333; 
             color: white; 
-            border-radius: 4px; 
+            border-radius: 6px; 
             box-sizing: border-box; 
             font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+            transition: border 0.2s;
         }
         
-        input:focus, textarea:focus { border-color: var(--accent); outline: none; }
+        input:focus, textarea:focus { border-color: var(--accent); outline: none; background: #1a1a1a; }
         textarea { resize: vertical; min-height: 80px; }
 
         /* Botón Enviar */
         .btn-send { 
             width: 100%; 
-            padding: 12px; 
+            padding: 14px; 
             background: var(--success); 
             color: white; 
             border: none; 
-            font-weight: bold; 
+            font-weight: 700; 
             cursor: pointer; 
-            border-radius: 4px; 
-            font-size: 16px;
-            margin-top: 10px;
-            transition: 0.2s;
+            border-radius: 6px; 
+            font-size: 14px;
+            margin-top: 15px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn-send:hover { filter: brightness(1.1); }
-        .btn-send:disabled { background: #444; cursor: not-allowed; }
+        .btn-send:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-send:active { transform: translateY(0); }
 
         /* Notificación */
         .notification {
             display: none;
             margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            animation: fadeIn 0.3s ease-in-out;
         }
-        .notif-success { background: rgba(40, 167, 69, 0.2); color: var(--success); border: 1px solid var(--success); }
-        .notif-error { background: rgba(220, 53, 69, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .notif-success { background: rgba(40, 167, 69, 0.15); color: #4cd16e; border: 1px solid rgba(40, 167, 69, 0.3); }
+        .notif-error { background: rgba(220, 53, 69, 0.15); color: #ff6b6b; border: 1px solid rgba(220, 53, 69, 0.3); }
 
-        /* --- BOTÓN DERECHOS DE AUTOR --- */
-        .copyright-badge {
+        /* --- FOOTER PROFESIONAL --- */
+        .pro-footer {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 11px;
-            font-weight: bold;
-            cursor: default;
-            transition: all 0.3s ease;
-            user-select: none;
+            bottom: 25px;
+            right: 30px;
+            text-align: right;
             z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            opacity: 0.6;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            cursor: default;
+            user-select: none;
         }
 
-        .copyright-badge:hover {
-            background: rgba(0, 45, 98, 0.8); /* Azulito al pasar el mouse */
-            color: white;
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        .pro-footer:hover {
+            opacity: 1;
+            transform: translateX(-5px);
         }
+
+        .server-brand {
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 1px;
+            line-height: 1;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .server-brand span { color: var(--accent); }
+
+        .dev-credits {
+            font-size: 11px;
+            color: #888;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #444;
+            padding-top: 4px;
+            display: inline-block;
+        }
+
+        .dev-names { color: #ccc; font-weight: 700; }
 
     </style>
 </head>
 <body>
 
     <div class="dispatch-container">
-        <h2>Central 112 VLC:RP</h2>
-        <p>Seleccione el servicio y describa la emergencia</p>
+        <h2>CENTRAL 112</h2>
+        <p class="subtitle">Sistema de Gestión de Emergencias VLC:RP</p>
 
         <!-- Selector de Servicios -->
         <div class="service-grid">
             <div class="service-btn" onclick="selectService('policia', this)">👮‍♂️ Policía</div>
             <div class="service-btn" onclick="selectService('ems', this)">🚑 S.A.M.U</div>
             <div class="service-btn" onclick="selectService('bomberos', this)">🚒 Bomberos</div>
-            <div class="service-btn" onclick="selectService('mecanicos', this)">🔧 Asistencia Carretera</div>
+            <div class="service-btn" onclick="selectService('mecanicos', this)">🔧 Mecánicos</div>
         </div>
 
         <!-- Formulario -->
         <div class="input-group">
             <label>NOMBRE DEL CIUDADANO</label>
-            <input type="text" id="name" placeholder="Ej: Juan Perez">
+            <input type="text" id="name" placeholder="Nombre y Apellidos">
         </div>
 
         <div class="input-group">
             <label>UBICACIÓN EXACTA</label>
-            <input type="text" id="location" placeholder="Ej: Plaza Central, Calle 4">
+            <input type="text" id="location" placeholder="Calle, número o referencia">
         </div>
 
         <div class="input-group">
-            <label>DESCRIPCIÓN DE LA SITUACIÓN</label>
-            <textarea id="message" placeholder="Describa brevemente lo sucedido..."></textarea>
+            <label>DETALLES DE LA EMERGENCIA</label>
+            <textarea id="message" placeholder="Describa la situación..."></textarea>
         </div>
 
-        <button class="btn-send" onclick="sendAlert()">ENVIAR ALERTA 📡</button>
+        <button class="btn-send" onclick="sendAlert()">ENVIAR AVISO 📡</button>
 
         <div id="notification" class="notification"></div>
     </div>
 
-    <!-- Botón de Derechos de Autor -->
-    <div class="copyright-badge" title="Development Team">
-        <span>© Todos Los Derechos Reservados a: george00_./ Zyn0rX ツ</span>
+    <!-- Footer Profesional de Derechos -->
+    <div class="pro-footer">
+        <div class="server-brand">VLC<span>:RP</span></div>
+        <div class="dev-credits">
+            System Dev by <span class="dev-names">george00_. / Zyn0rX ツ</span>
+        </div>
     </div>
 
     <script>
@@ -206,36 +246,39 @@
         let servicePing = ""; 
 
         function selectService(service, element) {
+            // Limpiar selección previa
             document.querySelectorAll('.service-btn').forEach(btn => {
                 btn.classList.remove('active', 'policia', 'ems', 'bomberos', 'mecanicos');
             });
 
+            // Activar botón
             element.classList.add('active', service);
             currentService = service;
 
+            // Configurar variables según servicio
             switch(service) {
                 case 'policia':
-                    serviceColor = 3447003; 
+                    serviceColor = 3447003; // Azul
                     serviceName = "Policia Nacional/Guardia Civil";
                     servicePing = "<@&1398228126919561216>"; 
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--policia)";
                     break;
                 case 'ems':
-                    serviceColor = 15158332; 
+                    serviceColor = 15158332; // Rojo
                     serviceName = "Servicios Medicos (S.A.M.U)";
                     servicePing = "<@&1398274968705568878>"; 
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--ems)";
                     break;
                 case 'bomberos':
-                    serviceColor = 15105570; 
+                    serviceColor = 15105570; // Naranja
                     serviceName = "Bomberos";
                     servicePing = "<@&1398274299151913061>"; 
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--bomberos)";
                     break;
                 case 'mecanicos':
-                    serviceColor = 16776960; 
+                    serviceColor = 16776960; // Amarillo
                     serviceName = "Asistencia En Carretera";
-                    servicePing = ""; 
+                    servicePing = ""; // Sin ping
                     document.querySelector('.dispatch-container').style.borderTopColor = "var(--mecanicos)";
                     break;
             }
@@ -247,29 +290,29 @@
             const message = document.getElementById('message').value;
 
             if (!currentService) {
-                showNotification("⚠ Por favor, selecciona un servicio (Policía, EMS...)", "error");
+                showNotification("⚠ Selecciona un departamento de emergencia.", "error");
                 return;
             }
             if (!name || !location || !message) {
-                showNotification("⚠ Debes rellenar todos los campos.", "error");
+                showNotification("⚠ Completa todos los campos requeridos.", "error");
                 return;
             }
 
             const payload = {
                 username: "Central 112 VLC:RP",
-                content: servicePing, 
+                content: servicePing, // PING FUERA DEL EMBED
                 avatar_url: "https://media.discordapp.net/attachments/1438632014847672431/1447739898575454290/image.png?ex=6938b859&is=693766d9&hm=08c8e01134179da0d005c82b3a6075dee32392ad7e029b796dd95ee9f8519f25&=&format=png&quality=lossless&width=161&height=161",
                 embeds: [
                     {
-                        title: `🚨 LLAMADA DE EMERGENCIA: ${serviceName}`,
-                        description: `**Detalles del Aviso:**\n${message}`,
+                        title: `🚨 NUEVO AVISO: ${serviceName}`,
+                        description: `>>> **${message}**`, // Formato de cita para resaltar
                         color: serviceColor,
                         fields: [
-                            { name: "👤 Ciudadano", value: name, inline: true },
-                            { name: "📍 Ubicación", value: location, inline: true }
+                            { name: "👤 Solicitante", value: name, inline: true },
+                            { name: "📍 Dirección", value: `\`${location}\``, inline: true }
                         ],
                         footer: {
-                            text: "Sistema de Alertas 112 • VLC:RP",
+                            text: "VLC:RP Emergency System • Developed by george00_. / Zyn0rX ツ",
                             icon_url: "https://cdn-icons-png.flaticon.com/512/1022/1022300.png"
                         },
                         timestamp: new Date().toISOString()
@@ -284,17 +327,17 @@
             })
             .then(response => {
                 if (response.ok) {
-                    showNotification("✅ Alerta enviada correctamente a las unidades.", "success");
+                    showNotification("✅ Aviso transmitido a las unidades.", "success");
                     document.getElementById('name').value = "";
                     document.getElementById('location').value = "";
                     document.getElementById('message').value = "";
                 } else {
-                    showNotification("❌ Error al enviar. Revisa la consola o el Webhook.", "error");
+                    showNotification("❌ Error de comunicación con la central.", "error");
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification("❌ Error de conexión.", "error");
+                showNotification("❌ Fallo de red.", "error");
             });
         }
 
